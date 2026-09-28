@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { GoogleGenAI, Type } from '@google/genai';
 import dotenv from 'dotenv';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 dotenv.config();
@@ -13,6 +14,42 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+
+// Serve public directory statically (favicons, icons, etc.)
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Explicit favicon handlers to guarantee 200 OK without 404
+app.get('/favicon.ico', (_req: Request, res: Response) => {
+  const icoPath = path.join(__dirname, 'public', 'favicon.ico');
+  const rootIco = path.join(__dirname, 'favicon.ico');
+  if (fs.existsSync(icoPath)) {
+    res.setHeader('Content-Type', 'image/x-icon');
+    res.sendFile(icoPath);
+  } else if (fs.existsSync(rootIco)) {
+    res.setHeader('Content-Type', 'image/x-icon');
+    res.sendFile(rootIco);
+  } else {
+    res.status(204).end();
+  }
+});
+
+app.get('/favicon.svg', (_req: Request, res: Response) => {
+  const svgPath = path.join(__dirname, 'public', 'favicon.svg');
+  if (fs.existsSync(svgPath)) {
+    res.setHeader('Content-Type', 'image/svg+xml');
+    res.sendFile(svgPath);
+  } else {
+    res.status(204).end();
+  }
+});
+
+// Route /main.tsx directly to /src/main.tsx if requested
+app.use((req: Request, _res: Response, next) => {
+  if (req.path === '/main.tsx' || req.url === '/main.tsx') {
+    req.url = '/src/main.tsx';
+  }
+  next();
+});
 
 // Initialize Google GenAI with GEMINI_API_KEY from environment
 const apiKey = process.env.GEMINI_API_KEY || '';
