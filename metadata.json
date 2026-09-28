@@ -1,0 +1,6 @@
+{
+  "name": "Contra Tri Thức 11 - Chiến Binh Arcade",
+  "description": "Game Contra 2D retro cổ điển kết hợp ôn tập kiến thức lớp 11 (Toán, Văn, Anh, Lý, Địa, Sử). Giao diện arcade chân thực, hệ thống chiến đấu vũ khí đa dạng và câu hỏi cá nhân hóa thông minh.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
